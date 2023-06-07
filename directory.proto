@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+// Sintaxe definitiva do servidor de diretório
+package directory;
+
+service Directory {
+  rpc insert(InsertRequest) returns (InsertReply) {}          // RPC de inserção 
+  rpc read(ReadRequest) returns (ReadReply) {}                // RPC de consulta  
+  rpc register(RegisterRequest) returns (RegisterReply) {}    // RPC de registro
+  rpc terminate(TerminateRequest) returns (TerminateReply) {} // RPC de terminação
+}
+
+// "...recebe como parâmetros um inteiro positivo (chave), um string (desc) e um número de ponto flutuante (valor)..."
+message InsertRequest {
+  int32 key = 1;
+  string desc = 2;
+  float val = 3;
+}
+
+// 0 ou 1
+message InsertReply { int32 retval = 1; }
+
+// "...recebe como parâmetros um inteiro positivo (chave)..."
+message ReadRequest { int32 key = 1; }
+
+// "...retorna o conteúdo do string e valor associados à chave, caso ela exista, ou um string nulo e o valor zero caso contrário..."
+message ReadReply {
+  string desc = 1;
+  float val = 2;
+}
+
+// "...recebe como parâmetro um string com o nome de uma máquina e um inteiro identificando um porto naquela máquina..."
+message RegisterRequest {
+  string intServerName = 1; // "integration" server name
+  int32 intServerPort = 2;
+}
+
+// "...deve retornar para o cliente o valor retornado pelo outro servidor..."
+message RegisterReply { int32 retval = 1; }
+
+// "...um procedimento sem parâmetros que indica que o servidor deve terminar sua execução..."
+message TerminateRequest {}
+
+// "...servidor deve responder com um inteiro igual ao número de chaves armazenadas até então..."
+message TerminateReply { int32 retval = 1; }

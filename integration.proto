@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package integration;
+
+service Integrate {
+  rpc read(ReadRequest) returns (ReadReply) {}                // RPC de consulta de servidor de integração
+  rpc register(RegisterRequest) returns (RegisterReply) {}    // RPC de registro de servidor de integração    
+  rpc terminate(TerminateRequest) returns (TerminateReply) {} // RPC de terminação de servidor de integração
+}
+
+// "...recebe como parâmetro o inteiro positivo ch..."
+message ReadRequest { int32 dirServerKey = 1; } // "directory server key"
+
+// "...retorna um string indicando o nome (ou endereço IP) do participante que contém aquela chave 
+// e um inteiro indicando o número do porto a ser usado para contactá-lo...."
+message ReadReply { 
+    string name = 1;
+    int32 port = 2; 
+}
+
+// "...recebe como parâmetros o nome da máquina onde um servidor de diretórios independente está 
+// executando e um inteiro indicando o número do porto usado por ele, 
+// seguidos por uma lista com todas as chaves contidas naquele servidor (inteiros)..."
+message RegisterRequest {
+  string dirServerName = 1;
+  int32 dirServerPort = 2;
+  repeated int32 dirServerKeys = 3;
+}
+
+// "...Deve retornar o número de chaves recebidas ou zero..."
+message RegisterReply { int32 retval = 1; }
+
+// "...um procedimento sem parâmetros que indica que o servidor deve terminar sua execução..."
+message TerminateRequest {}
+
+// "...o servidor deve responder com um inteiro igual ao número de chaves registradas até então..."
+message TerminateReply { int32 retval = 1; }
